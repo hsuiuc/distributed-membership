@@ -60,7 +60,8 @@ public class Daemon {
             System.out.println("nodes communicate on port : " + packetPortNumber);
 
             //init ID
-            ID = LocalDateTime.now().toString() + "#" + getInet4Address().toString();
+            ID = LocalDateTime.now().toString() + "#" + getInet4Address().toString().substring(1);
+
 
             //init log file output stream
             File outputFir = new File(logFilePath);
