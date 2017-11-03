@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
  */
 public class Daemon {
     //ID of the node, includes time stamp and IP address
-    private static String ID;
+    public static String ID;
 
     //set using configuration file
     //well-known introducers in the distributed system
@@ -24,7 +24,7 @@ public class Daemon {
     static int packetPortNumber;
 
     //neighbours set, store ID of neighbours
-    private static final Set<String> neighbours = new HashSet<>();
+    static final Set<String> neighbours = new HashSet<>();
     //membership list. key is ID, value is {heart beat counter, local time millis}
     static final TreeMap<String, long[]> membershipList = new TreeMap<>();
 
@@ -60,8 +60,8 @@ public class Daemon {
             System.out.println("nodes communicate on port : " + packetPortNumber);
 
             //init ID
+            //getInet4Address().toString() will return "/192.168.0.13" so we need substring
             ID = LocalDateTime.now().toString() + "#" + getInet4Address().toString().substring(1);
-
 
             //init log file output stream
             File outputFir = new File(logFilePath);
@@ -197,6 +197,7 @@ public class Daemon {
         System.out.println("Enter \"LEAVE\" to leave the group");
         System.out.println("Enter \"ID\" to show self's ID");
         System.out.println("Enter \"MEMBER\" to show the membership list");
+        System.out.println("Enter \"NEIGHBOUR\" to show the neighbour list");
     }
 
     /**
@@ -254,6 +255,7 @@ public class Daemon {
                             if (isIntroducer) {
                                 executorService.execute(new IntroducerThread());
                             }
+                            executorService.execute(new HeartbeatThread(1900));
                         } else {
                             System.out.println("already in the group");
                         }
@@ -262,13 +264,21 @@ public class Daemon {
                         System.out.println("leave the group");
                         break;
                     case "ID":
-                        System.out.println("show ID");
+                        System.out.println("Node ID : " + ID);
                         break;
                     case "MEMBER":
                         System.out.println("membership list :");
                         System.out.println("=======================================");
                         for (String member : membershipList.keySet()) {
                             System.out.println(member);
+                        }
+                        System.out.println("=======================================");
+                        break;
+                    case "NEIGHBOUR":
+                        System.out.println("neighbour list :");
+                        System.out.println("=======================================");
+                        for (String neighbour : neighbours) {
+                            System.out.println(neighbour);
                         }
                         System.out.println("=======================================");
                         break;

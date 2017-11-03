@@ -61,6 +61,7 @@ public class IntroducerThread extends Thread {
                 Daemon.writeLog("ADD", joinNodeID);
 
                 //gossip the new join to all the nodes
+                Protocol.sendGossip(joinNodeID, "ADD", 0, 2, 2, introducerSocket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
