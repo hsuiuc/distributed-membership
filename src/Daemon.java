@@ -269,8 +269,9 @@ public class Daemon {
                     case "MEMBER":
                         System.out.println("membership list :");
                         System.out.println("=======================================");
-                        for (String member : membershipList.keySet()) {
-                            System.out.println(member);
+                        for (Map.Entry<String, long[]> entry : membershipList.entrySet()) {
+                            System.out.println("ID : " + entry.getKey() + "counter : "
+                                    + entry.getValue()[0] + "local time : " + entry.getValue()[1]);
                         }
                         System.out.println("=======================================");
                         break;
