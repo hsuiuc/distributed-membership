@@ -13,9 +13,9 @@ import java.util.List;
 public class Protocol {
     /**
      * send heartbeat to all neighbours
-     * @param ID
+     * @param ID node ID
      * @param counter heartbeat counter
-     * @param sendSocket
+     * @param sendSocket send socket
      */
     public static void sendHeartBeat(String ID, long counter, DatagramSocket sendSocket) {
         byte[] heartBeatMessage = ("0_" + ID + "_" + counter).getBytes();

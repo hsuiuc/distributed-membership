@@ -256,12 +256,20 @@ public class Daemon {
                                 executorService.execute(new IntroducerThread());
                             }
                             executorService.execute(new HeartbeatThread(1900));
+                            executorService.execute(new ListeningThread());
                         } else {
                             System.out.println("already in the group");
                         }
                         break;
                     case "LEAVE":
                         System.out.println("leave the group");
+                        if (membershipList.size() != 0) {
+                            Protocol.sendGossip(ID, "LEAVE", membershipList.get(ID)[0],
+                                    2, 2, new DatagramSocket());
+                            fileOutput.println(LocalDateTime.now().toString() + " \"LEAVE!!\" " + ID);
+                            fileOutput.close();
+                            System.exit(0);
+                        }
                         break;
                     case "ID":
                         System.out.println("Node ID : " + ID);
