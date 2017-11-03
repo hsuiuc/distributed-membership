@@ -1,10 +1,9 @@
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by haosun on 11/1/17.
@@ -44,6 +43,7 @@ public class Daemon {
 
         Properties configuration = new Properties();
         try {
+            //load config file
             InputStream inputStream = new FileInputStream(configPath);
             configuration.load(inputStream);
             hostNames = configuration.getProperty("hostNames").split(":");
@@ -59,8 +59,10 @@ public class Daemon {
             System.out.println("introducers listen join request on port : " + joinPortNumber);
             System.out.println("nodes communicate on port : " + packetPortNumber);
 
-            ID = LocalDateTime.now().toString() + "#" + InetAddress.getLocalHost().toString();
+            //init ID
+            ID = LocalDateTime.now().toString() + "#" + getInet4Address().toString();
 
+            //init log file output stream
             File outputFir = new File(logFilePath);
             if (!outputFir.exists()) {
                 outputFir.mkdir();
@@ -167,6 +169,23 @@ public class Daemon {
         }
     }
 
+    private static Inet4Address getInet4Address() throws UnknownHostException {
+        try {
+            Enumeration<NetworkInterface> networkInterfaceEnumeration = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface networkInterface : Collections.list(networkInterfaceEnumeration)) {
+                Enumeration<InetAddress> inetAddressEnumeration = networkInterface.getInetAddresses();
+                for (InetAddress inetAddress : Collections.list(inetAddressEnumeration)) {
+                    if (inetAddress instanceof Inet4Address && !inetAddress.isLoopbackAddress()) {
+                        return (Inet4Address) inetAddress;
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return (Inet4Address) InetAddress.getLocalHost();
+    }
+
     /**
      * display prompts to the user
      */
@@ -230,7 +249,10 @@ public class Daemon {
                         if (membershipList.size() == 0) {
                             System.out.println("join the group");
                             joinGroup(isIntroducer);
-
+                            ExecutorService executorService = Executors.newFixedThreadPool(3 + (isIntroducer ? 1 : 0));
+                            if (isIntroducer) {
+                                executorService.execute(new IntroducerThread());
+                            }
                         } else {
                             System.out.println("already in the group");
                         }
