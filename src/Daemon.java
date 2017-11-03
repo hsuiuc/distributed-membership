@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
  */
 public class Daemon {
     //ID of the node, includes time stamp and IP address
-    public static String ID;
+    static String ID;
 
     //set using configuration file
     //well-known introducers in the distributed system
@@ -35,7 +35,7 @@ public class Daemon {
      * constructor
      * @param configPath path of configuration file
      */
-    public Daemon(String configPath) {
+    private Daemon(String configPath) {
         if (!(new File(configPath)).isFile()) {
             System.err.println("invalid configuration file path");
             System.exit(1);
@@ -244,7 +244,7 @@ public class Daemon {
         displayPrompt();
 
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
-            String cmd = null;
+            String cmd;
             while ((cmd = bufferedReader.readLine()) != null) {
                 switch (cmd) {
                     case "JOIN":
