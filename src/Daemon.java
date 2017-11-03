@@ -255,8 +255,9 @@ public class Daemon {
                             if (isIntroducer) {
                                 executorService.execute(new IntroducerThread());
                             }
-                            executorService.execute(new HeartbeatThread(1900));
+                            executorService.execute(new HeartbeatThread(900));
                             executorService.execute(new ListeningThread());
+                            executorService.execute(new MonitorThread());
                         } else {
                             System.out.println("already in the group");
                         }
