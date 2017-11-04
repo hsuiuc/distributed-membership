@@ -2,8 +2,8 @@
 /.idea/
 *.iml
 /.DS_Store
-.DS_Store/
+.DS_Store
+*.DS_Store
 /.idea/workspace.xml
-*.class
 .results/*
 /.results/
