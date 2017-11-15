@@ -29,7 +29,7 @@ public class HeartbeatThread extends Thread{
                 synchronized (Daemon.membershipList) {
                     Protocol.sendHeartBeat(Daemon.ID, counter++, sendSocket);
                     Daemon.membershipList.put(Daemon.ID, new long[]{counter, System.currentTimeMillis()});
-                    //Daemon.writeLog("HEARTBEAT:" + counter, Daemon.ID);
+                    Daemon.writeLog("HEARTBEAT OWN", Daemon.ID);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

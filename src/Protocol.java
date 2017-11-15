@@ -33,12 +33,12 @@ public class Protocol {
 
     /**
      * send gossip message to randomly chosen members
-     * @param ID
-     * @param action
-     * @param counter
-     * @param TTL
+     * @param ID node id
+     * @param action action
+     * @param counter heartbeat counter
+     * @param TTL relay number
      * @param numOfTarget num of members to send gossip to
-     * @param sendSocket
+     * @param sendSocket the socket used to send the message
      */
     public static void sendGossip(String ID, String action, long counter, int TTL, int numOfTarget, DatagramSocket sendSocket) {
         byte[] gossipMessage = ("1_" + ID + "_" + action + "_" + counter + "_" + TTL).getBytes();

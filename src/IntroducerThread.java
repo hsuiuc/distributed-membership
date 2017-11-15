@@ -36,6 +36,8 @@ public class IntroducerThread extends Thread {
 
                 //build the membership list into a string
                 //send the string to the join node
+                //message format
+                //nodeID/counter%anothernodeID/counter
                 StringBuilder sb = new StringBuilder();
                 synchronized (Daemon.membershipList) {
                     for (Map.Entry<String, long[]> mapEntry : Daemon.membershipList.entrySet()) {
@@ -58,7 +60,7 @@ public class IntroducerThread extends Thread {
                 Daemon.updateNeighbours();
 
                 //write log
-                Daemon.writeLog("ADD", joinNodeID);
+                Daemon.writeLog("INITIAL ADD", joinNodeID);
 
                 //gossip the new join to all the nodes
                 Protocol.sendGossip(joinNodeID, "ADD", 0, 2, 2, introducerSocket);

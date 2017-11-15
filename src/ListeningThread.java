@@ -44,9 +44,10 @@ public class ListeningThread extends Thread {
                         Daemon.membershipList.put(ID, new long[]{counter, System.currentTimeMillis()});
                         Daemon.updateNeighbours();
                         Protocol.sendGossip(ID, "ADD", counter, 2, 2, sendSocket);
-                        Daemon.writeLog("REJOIN", ID);
+                        Daemon.writeLog("HEARTBEAT REJOIN", ID);
                     } else if (counter > memberDetail[0]) {
                         Daemon.membershipList.put(ID, new long[]{counter, System.currentTimeMillis()});
+                        Daemon.writeLog("HEARTBEAT NEIGHBOR", ID);
                     }
                     break;
                 case "ADD":
@@ -54,7 +55,7 @@ public class ListeningThread extends Thread {
                         Daemon.membershipList.put(ID, new long[]{counter, System.currentTimeMillis()});
                         if (memberDetail == null) {
                             Daemon.updateNeighbours();
-                            Daemon.writeLog("ADD", ID);
+                            Daemon.writeLog("GOSSIP ADD", ID);
                         }
                     }
                     break;
@@ -62,14 +63,14 @@ public class ListeningThread extends Thread {
                     if (memberDetail != null) {
                         Daemon.membershipList.remove(ID);
                         Daemon.updateNeighbours();
-                        Daemon.writeLog("LEAVE", ID);
+                        Daemon.writeLog("GOSSIP LEAVE", ID);
                     }
                     break;
                 case "REMOVE":
                     if (memberDetail != null) {
                         Daemon.membershipList.remove(ID);
                         Daemon.updateNeighbours();
-                        Daemon.writeLog("REMOVE", ID);
+                        Daemon.writeLog("GOSSIP REMOVE", ID);
                     }
                     break;
                 default:
@@ -94,7 +95,7 @@ public class ListeningThread extends Thread {
                 switch (messageFlag) {
                     case "0":
                         updateMembershipList(parsedMessage[1], "HEARTBEAT", Long.parseLong(parsedMessage[2]));
-                        Daemon.writeLog("HEARTBEAT", parsedMessage[1]);
+                        //Daemon.writeLog("HEARTBEAT", parsedMessage[1]);
                         break;
                     case "1":
                         int TTL = Integer.parseInt(parsedMessage[4]);
@@ -103,7 +104,7 @@ public class ListeningThread extends Thread {
                                     --TTL, 2, sendSocket);
                         }
                         updateMembershipList(parsedMessage[1], parsedMessage[2], Long.parseLong(parsedMessage[3]));
-                        Daemon.writeLog("GOSSIP", parsedMessage[1]);
+                        //Daemon.writeLog("GOSSIP", parsedMessage[1]);
                         break;
                 }
             } catch (IOException e) {

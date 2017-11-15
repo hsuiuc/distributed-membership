@@ -203,15 +203,32 @@ public class Daemon {
     /**
      * write log files
      * @param action the action that is performed
+     *               all possible actions:
+     *               JOIN in daemon thread, node join the group
+     *               INITIAL ADD in introducer thread
+     *               HEARTBEAT OWN in heartbeat thread
+     *               HEARTBEAT NEIGHBOR in listening thread
+     *               HEARTBEAT REJOIN in listening thread
+     *               GOSSIP ADD in listening thread
+     *               GOSSIP LEAVE in listening thread
+     *               GOSSIP REMOVE in listening thread
+     *               PASS  in monitor thread
+     *               FAILURE in monitor thread
      * @param nodeID the node ID
      */
     static void writeLog(String action, String nodeID) {
 
         // write logs about action happened to the nodeID into log
         fileOutput.println(LocalDateTime.now().toString() + " \"" + action + "\" " + nodeID);
-        if (!action.equals("FAILURE") || !action.equals("MESSAGE") || !action.equals("JOIN")) {
+        if (action.equals("JOIN") || action.equals("INITIAL ADD") || action.equals("HEARTBEAT REJOIN") ||
+                action.equals("GOSSIP ADD") || action.equals("GOSSIP LEAVE") || action.equals("GOSSIP REMOVE")
+                || action.equals("FAILURE")) {
             fileOutput.println("Updated Membership List:");
             for (String key : membershipList.keySet()) {
+                fileOutput.println(key);
+            }
+            fileOutput.println("Updated Neighbor List:");
+            for (String key : neighbours) {
                 fileOutput.println(key);
             }
             fileOutput.println("======================");
